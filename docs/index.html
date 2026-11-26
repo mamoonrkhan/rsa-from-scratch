@@ -8,176 +8,132 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <p class="kicker"><a href="https://github.com/mamoonrkhan/rsa-from-scratch">rsa-from-scratch</a></p>
-    <h1>RSA by hand</h1>
-    <p class="lede">
-      RSA is how your browser and a website agree on secrets over the internet. Underneath, it's
-      nothing but the number theory from a discrete math class: primes, remainders, and Euclid's
-      algorithm. This page walks through it with small numbers, so you can check every step yourself.
-      Change anything in the boxes and the page updates.
-    </p>
-  </header>
-
   <main>
-    <section class="step">
-      <div class="num">1</div>
-      <div class="body">
-        <h2>Pick two primes</h2>
-        <p>These are the secret ingredient. Real keys use primes over 300 digits long; we'll use small ones.</p>
-        <div class="inputs">
-          <label>p = <input id="p" type="number" min="2" value="61"></label>
-          <label>q = <input id="q" type="number" min="2" value="53"></label>
-          <button id="random-primes">pick random ones</button>
-        </div>
-        <p id="prime-error" class="error" hidden></p>
-      </div>
-    </section>
+    <h1>RSA by hand</h1>
+    <p class="sub">
+      A worked example of RSA encryption with small numbers. Change p, q, e or the message and everything
+      below is recomputed. Code is on <a href="https://github.com/mamoonrkhan/rsa-from-scratch">GitHub</a>.
+    </p>
+
+    <p>
+      RSA lets someone send you a message that only you can read, even though you never met to agree on a
+      password. It's used whenever your browser connects to a site over HTTPS. All of it comes from a few
+      results in number theory: Euclid's algorithm, modular inverses and Euler's theorem.
+    </p>
+
+    <h2>Step 1. Pick two primes</h2>
+    <div class="inputs">
+      <label>p <input id="p" type="number" min="2" value="61"></label>
+      <label>q <input id="q" type="number" min="2" value="53"></label>
+      <button id="random-primes">Random primes</button>
+    </div>
+    <p id="prime-error" class="error" hidden></p>
+    <p class="note">Real keys use primes around 300 digits long. These are small so the arithmetic fits on a page.</p>
 
     <div id="rest">
-      <section class="step">
-        <div class="num">2</div>
-        <div class="body">
-          <h2>Multiply them</h2>
-          <p class="math" id="n-line"></p>
-          <p>
-            Everyone gets to see <var>n</var>. The security of RSA rests on one bet: given <var>n</var>,
-            nobody can work out <var>p</var> and <var>q</var> in any reasonable time. Multiplying is easy;
-            undoing it (factoring) is not.
-          </p>
-        </div>
+      <h2>Step 2. Multiply them</h2>
+      <div class="work"><p id="n-line"></p></div>
+      <p>
+        <i>n</i> is public. <i>p</i> and <i>q</i> stay secret. The point of RSA is that recovering <i>p</i> and
+        <i>q</i> from <i>n</i> (factoring) is much harder than multiplying them.
+      </p>
+
+      <h2>Step 3. Compute φ(n)</h2>
+      <div class="work"><p id="phi-line"></p></div>
+      <p>
+        φ(<i>n</i>) is Euler's totient: how many numbers from 1 to <i>n</i> share no factor with <i>n</i>.
+        When <i>n</i> is a product of two different primes, it works out to (<i>p</i> − 1)(<i>q</i> − 1).
+        You need <i>p</i> and <i>q</i> to compute it, so it stays secret too.
+      </p>
+
+      <h2>Step 4. Choose e</h2>
+      <div class="inputs"><label>e <input id="e" type="number" min="3" value="17"></label></div>
+      <p>
+        <i>e</i> has to share no factor with φ(<i>n</i>), otherwise step 5 is impossible. Check with Euclid's
+        algorithm, gcd(φ(<i>n</i>), <i>e</i>):
+      </p>
+      <div class="work"><table id="euclid"></table></div>
+      <p id="gcd-verdict"></p>
+
+      <section id="d-step">
+        <h2>Step 5. Find d</h2>
+        <p>
+          <i>d</i> is the inverse of <i>e</i> mod φ(<i>n</i>), meaning <i>e</i> × <i>d</i> leaves remainder 1
+          when divided by φ(<i>n</i>). The extended Euclidean algorithm finds it: do the same divisions as in
+          step 4, but write each remainder as a combination of φ(<i>n</i>) and <i>e</i>.
+        </p>
+        <div class="work"><table id="ext-euclid"></table></div>
+        <p id="d-line"></p>
+        <table class="keys">
+          <tr><th>Public key</th><td id="pub-key"></td><td class="note">share with anyone</td></tr>
+          <tr><th>Private key</th><td id="priv-key"></td><td class="note">keep to yourself</td></tr>
+        </table>
       </section>
 
-      <section class="step">
-        <div class="num">3</div>
-        <div class="body">
-          <h2>Count the numbers that share no factor with n</h2>
-          <p class="math" id="phi-line"></p>
-          <p>
-            This count is Euler's totient, φ(<var>n</var>). For a prime <var>p</var>, every number from 1 to
-            <var>p</var> − 1 shares no factor with it, so φ(<var>p</var>) = <var>p</var> − 1. For two different primes
-            multiplied together, φ(<var>pq</var>) = (<var>p</var> − 1)(<var>q</var> − 1). You can only
-            compute this easily if you know <var>p</var> and <var>q</var>, which is why it stays secret.
-          </p>
-        </div>
+      <section id="enc-step">
+        <h2>Step 6. Encrypt</h2>
+        <div class="inputs"><label>Message <input id="msg" type="text" value="HELLO" maxlength="24"></label></div>
+        <p>
+          Each character becomes a number <i>m</i> (its ASCII code), and the ciphertext is
+          <i>c</i> = <i>m</i><sup><i>e</i></sup> mod <i>n</i>. This only uses the public key.
+        </p>
+        <div class="work scroll"><table id="enc-table" class="grid"></table></div>
+        <p id="repeat-note" class="note" hidden></p>
+        <details>
+          <summary>Computing <span id="sm-title"></span> without huge numbers</summary>
+          <div id="square-multiply"></div>
+        </details>
       </section>
 
-      <section class="step">
-        <div class="num">4</div>
-        <div class="body">
-          <h2>Choose the public exponent e</h2>
-          <div class="inputs"><label>e = <input id="e" type="number" min="3" value="17"></label></div>
-          <p>
-            <var>e</var> can be almost anything, as long as it shares no factor with φ(<var>n</var>), or step 5
-            won't work. Euclid's algorithm checks that by computing gcd(φ(<var>n</var>), <var>e</var>):
-          </p>
-          <table class="work" id="euclid"></table>
-          <p id="gcd-verdict"></p>
-        </div>
+      <section id="dec-step">
+        <h2>Step 7. Decrypt</h2>
+        <p>Decrypting uses the private key: <i>m</i> = <i>c</i><sup><i>d</i></sup> mod <i>n</i>.</p>
+        <div class="work scroll"><table id="dec-table" class="grid"></table></div>
+        <p>Result: <span id="decrypted" class="result"></span></p>
       </section>
 
-      <section class="step" id="d-step">
-        <div class="num">5</div>
-        <div class="body">
-          <h2>Work out the private exponent d</h2>
-          <p>
-            We want the number <var>d</var> with <var>e</var> × <var>d</var> ≡ 1 (mod φ(<var>n</var>)): the
-            "inverse of <var>e</var>" in clock arithmetic with φ(<var>n</var>) hours. The extended Euclidean
-            algorithm finds it. Run the same divisions as above, and also track how to write each remainder as
-            (something × φ) + (something × <var>e</var>):
-          </p>
-          <table class="work" id="ext-euclid"></table>
-          <p class="math" id="d-line"></p>
-          <div class="keys">
-            <div><span class="tag pub">public key</span> <span id="pub-key" class="mono"></span><br><small>give this to anyone</small></div>
-            <div><span class="tag priv">private key</span> <span id="priv-key" class="mono"></span><br><small>keep this to yourself</small></div>
-          </div>
-        </div>
-      </section>
+      <h2>Why decrypting works</h2>
+      <p>
+        From step 5, <i>e</i> × <i>d</i> = 1 + <i>k</i> × φ(<i>n</i>) for some whole number <i>k</i>
+        <span id="k-example"></span>. So
+      </p>
+      <div class="work">
+        <p>
+          <i>c</i><sup><i>d</i></sup> = <i>m</i><sup><i>ed</i></sup>
+          = <i>m</i><sup>1 + <i>k</i>φ(<i>n</i>)</sup>
+          = <i>m</i> × (<i>m</i><sup>φ(<i>n</i>)</sup>)<sup><i>k</i></sup>
+          ≡ <i>m</i> × 1<sup><i>k</i></sup> = <i>m</i> (mod <i>n</i>)
+        </p>
+      </div>
+      <p>
+        The step <i>m</i><sup>φ(<i>n</i>)</sup> ≡ 1 (mod <i>n</i>) is Euler's theorem. It needs <i>m</i> and
+        <i>n</i> to share no factor. RSA still works when they do, but proving that takes the Chinese Remainder
+        Theorem.
+      </p>
 
-      <section class="step" id="enc-step">
-        <div class="num">6</div>
-        <div class="body">
-          <h2>Encrypt a message</h2>
-          <div class="inputs"><label>message <input id="msg" type="text" value="HELLO" maxlength="24"></label></div>
-          <p>
-            Turn each character into a number (its ASCII code, <var>m</var>), then compute
-            <var>c</var> = <var>m</var><sup><var>e</var></sup> mod <var>n</var>. Anyone can do this with the public key.
-          </p>
-          <table class="work wide" id="enc-table"></table>
-          <p id="repeat-note" class="note" hidden></p>
-          <details>
-            <summary>How do you compute <span id="sm-title"></span> without a giant number?</summary>
-            <div id="square-multiply"></div>
-          </details>
-        </div>
-      </section>
-
-      <section class="step" id="dec-step">
-        <div class="num">7</div>
-        <div class="body">
-          <h2>Decrypt it</h2>
-          <p>
-            Only the private key holder can do this: <var>m</var> = <var>c</var><sup><var>d</var></sup> mod <var>n</var>.
-          </p>
-          <table class="work wide" id="dec-table"></table>
-          <p class="math big" id="decrypted"></p>
-        </div>
-      </section>
-
-      <section class="step">
-        <div class="num">8</div>
-        <div class="body">
-          <h2>Why does that give the message back?</h2>
-          <p>
-            Since <var>e</var> × <var>d</var> ≡ 1 (mod φ(<var>n</var>)), we can write
-            <var>e</var> × <var>d</var> = 1 + <var>k</var> × φ(<var>n</var>) for some whole number <var>k</var>
-            <span id="k-example"></span>. Then
-          </p>
-          <p class="math">
-            <var>c</var><sup><var>d</var></sup> = <var>m</var><sup><var>ed</var></sup>
-            = <var>m</var><sup>1 + <var>k</var>φ(<var>n</var>)</sup>
-            = <var>m</var> × (<var>m</var><sup>φ(<var>n</var>)</sup>)<sup><var>k</var></sup>
-            ≡ <var>m</var> × 1<sup><var>k</var></sup> = <var>m</var> (mod <var>n</var>)
-          </p>
-          <p>
-            The step where <var>m</var><sup>φ(<var>n</var>)</sup> ≡ 1 is <b>Euler's theorem</b>. It holds whenever
-            <var>m</var> shares no factor with <var>n</var>; with a bit more work (using the Chinese Remainder
-            Theorem) you can show RSA still works when it does.
-          </p>
-        </div>
-      </section>
-
-      <section class="step">
-        <div class="num">9</div>
-        <div class="body">
-          <h2>Now try to break it</h2>
-          <p>
-            An attacker sees <var>n</var> = <span id="n-again" class="mono"></span> and <var>e</var>. If they can
-            factor <var>n</var>, they can redo steps 3 to 5 and get <var>d</var>. The simplest way is to try
-            dividing by 2, 3, 5, 7, … until something works.
-          </p>
-          <button id="crack">factor n</button>
-          <p id="crack-result" class="math"></p>
-          <p>
-            With these tiny primes that's instant. The number of tries grows like √<var>n</var>, so every
-            extra digit in <var>n</var> makes it about 3 times slower. A real 617-digit <var>n</var> would take around
-            10<sup>308</sup> tries: far more than the number of atoms in the universe (about 10<sup>80</sup>). Better
-            factoring methods exist, but none are fast enough, and that gap is what keeps your data safe.
-          </p>
-        </div>
-      </section>
+      <h2>Breaking it</h2>
+      <p>
+        Someone listening in knows <i>n</i> = <span id="n-again"></span> and <i>e</i>. If they can factor
+        <i>n</i>, they can repeat steps 3 to 5 and get <i>d</i>. The simplest method is to divide by 2, 3, 5, 7, …
+        until one works.
+      </p>
+      <p><button id="crack">Factor n</button></p>
+      <p id="crack-result"></p>
+      <p>
+        Trial division needs up to √<i>n</i> tries, so each extra digit of <i>n</i> makes it about 3 times slower.
+        For a real 617-digit <i>n</i> that's around 10<sup>308</sup> tries. Faster factoring algorithms exist,
+        but at that size they're still far too slow.
+      </p>
     </div>
-  </main>
 
-  <footer>
-    <p>
-      The <a href="https://github.com/mamoonrkhan/rsa-from-scratch">Python code</a> does the same thing with
-      real-size keys, plus signatures, faster decryption with the Chinese Remainder Theorem, and a few attacks
-      on RSA used carelessly. This is textbook RSA for learning. Real systems add random padding, so don't use
-      it to protect anything.
+    <hr>
+    <p class="note">
+      This is "textbook" RSA, the version taught in class. Real implementations add random padding before
+      encrypting, so please don't use this to protect anything. The
+      <a href="https://github.com/mamoonrkhan/rsa-from-scratch">Python version</a> works with real-size keys
+      and also has signatures, faster decryption and some attacks.
     </p>
-  </footer>
+  </main>
 
   <script src="rsa.js"></script>
 </body>

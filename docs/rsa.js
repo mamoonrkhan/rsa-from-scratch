@@ -143,9 +143,9 @@
     [...text].forEach((ch) => { if (seen.has(ch) && !repeat) repeat = ch; seen.set(ch, true); });
     $('repeat-note').hidden = !repeat;
     if (repeat) {
-      $('repeat-note').innerHTML = `Notice that both "${show(repeat)}"s encrypt to the same number. An eavesdropper can't read
-        the message, but they can see the pattern, and with enough text that's enough to crack it like a newspaper puzzle.
-        Real RSA fixes this by adding random padding to each message before encrypting.`;
+      $('repeat-note').innerHTML = `Both "${show(repeat)}"s encrypt to the same number. Someone listening can't read the
+        message, but they can see which letters repeat, and with enough text that's often enough to guess it (the same way
+        you'd solve a cryptogram). Real RSA avoids this by adding random padding before encrypting.`;
     }
 
     const first = codes[0];
@@ -157,15 +157,15 @@
       <table class="work">${sm.steps.map((s) =>
         `<tr class="${s.used ? 'hit' : 'skip'}"><td>${first}<sup>${s.k}</sup> mod ${fmt(n)}</td><td>=</td><td>${fmt(s.power)}</td>
          <td class="aside">${s.used ? `bit is 1: multiply in → ${fmt(s.result)}` : 'bit is 0: skip'}</td></tr>`).join('')}</table>
-      <p>${sm.steps.length} squarings instead of ${e - 1n} multiplications. For real keys, where <var>e</var> or <var>d</var>
-      has hundreds of digits, this is the difference between microseconds and never finishing.</p>`;
+      <p>That's ${sm.steps.length} squarings instead of ${e - 1n} multiplications. With a real key, <var>d</var> has hundreds of
+      digits, so multiplying one step at a time would never finish, while squaring takes a few thousand steps.</p>`;
 
     const back = ciphers.map((c) => modPow(c, d, n));
     $('dec-table').innerHTML =
       `<tr><th><var>c</var></th>${ciphers.map((c) => `<td>${fmt(c)}</td>`).join('')}</tr>` +
       `<tr><th><var>c</var><sup>${fmt(d)}</sup> mod ${fmt(n)}</th>${back.map((m) => `<td><b>${m}</b></td>`).join('')}</tr>` +
       `<tr><th>character</th>${back.map((m) => `<td>${show(String.fromCharCode(Number(m)))}</td>`).join('')}</tr>`;
-    $('decrypted').innerHTML = `“${esc(back.map((m) => String.fromCharCode(Number(m))).join(''))}”`;
+    $('decrypted').textContent = `"${back.map((m) => String.fromCharCode(Number(m))).join('')}"`;
     $('crack-result').innerHTML = '';
   }
 
@@ -176,7 +176,7 @@
     while (n % d !== 0) { d += d === 2 ? 1 : 2; tries++; }
     const ms = performance.now() - t0;
     $('crack-result').innerHTML = `${fmt(n)} = ${d} × ${fmt(n / d)}, found after ${fmt(tries + 1)} tries
-      (${ms < 1 ? 'under a millisecond' : `${ms.toFixed(1)} ms`}). From here, the attacker repeats steps 3 to 5 and has your private key.`;
+      (${ms < 1 ? 'under a millisecond' : `${ms.toFixed(1)} ms`}). Knowing p and q, steps 3 to 5 give d.`;
   }
 
   function randomPrimes() {
