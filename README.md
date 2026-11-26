@@ -40,7 +40,7 @@ decrypt, and nobody else can.
 
 ## Running it
 
-Just Python 3.9 or newer. There are no dependencies.
+Just Python 3.10 or newer. There are no dependencies.
 
 ```sh
 python3 examples/walkthrough.py   # the textbook example (p = 61, q = 53), every step printed
