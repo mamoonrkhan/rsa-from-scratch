@@ -7,10 +7,44 @@ intro discrete math course.
 
 [![RSA by hand worksheet](docs/screenshot.png)](https://mamoonrkhan.github.io/rsa-from-scratch/)
 
-No math background needed for the page: it starts with an animated padlock story, explains "mod" with a
-clock you can watch count, and walks through a story (passing a note in class while someone snoops) with
-numbers small enough to check on a phone calculator. Every step also gets a one-line plain-English version
-before the math.
+## The short version (no math needed)
+
+When you buy something online, your card number travels across the internet through computers you don't
+control, and any of them could read it. So how does your browser send a secret to a website it has never
+talked to before, without the two of you agreeing on a password first?
+
+The answer is a method called **RSA**. Think of a padlock:
+
+- The website hands out open padlocks to anyone who asks. That's its **public key**.
+- You put your secret in a box and snap one of those padlocks shut. Now nobody can open the box, not even you.
+- Only the website has the key that opens it. That's its **private key**.
+
+In RSA, the padlock and the key are numbers, and snapping the lock shut is a bit of arithmetic. It's easy to
+do and extremely hard to undo without the key. That's because the private key comes from two huge prime
+numbers, while the public key only shows what you get when you multiply them together. Multiplying is
+instant. Going backwards, from the product to the two primes, is a problem nobody knows how to solve in any
+reasonable time for numbers that big, even with every computer in the world working on it.
+
+What's in the project:
+- RSA written from scratch in Python, without any encryption libraries, so every step of the math is visible
+- a [web page](https://mamoonrkhan.github.io/rsa-from-scratch/) that walks through it with tiny numbers:
+  an animated padlock story, a clock that explains "mod", and a story about passing a note in class while
+  someone snoops
+- examples of breaking RSA when it's set up carelessly
+- tests that check all of it
+
+If you only have five minutes, open the page and click through the note-passing story. The rest of this
+README is the technical version.
+
+### Words you'll see below
+
+- **prime**: a whole number that only divides evenly by 1 and itself, like 2, 3, 5, 7, 11
+- **mod**: the remainder after dividing. 17 mod 12 = 5, the same way 17:00 is 5 o'clock
+- **encrypt** / **decrypt**: lock / unlock a message
+- **public key** / **private key**: the padlock anyone can use / the key only the owner has
+- **factoring**: splitting a number into the primes that multiply to make it (55 = 5 × 11)
+- **padding**: random extra data real systems mix into a message before locking it, so the same message
+  never locks the same way twice
 
 ## Why I made this
 
