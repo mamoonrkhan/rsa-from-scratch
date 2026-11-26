@@ -83,6 +83,33 @@
       RSA does the same thing with huge numbers: the clock has <i>n</i> spots, where <i>n</i> is hundreds of digits long.
     </p>
 
+    <h2>A story with real numbers: passing a note in class</h2>
+    <p>
+      Here's the whole thing once, start to finish, with numbers small enough to check on a phone calculator.
+      Click <b>Next</b> to go through it.
+    </p>
+    <figure class="story">
+      <svg id="classroom" viewBox="0 0 640 150" role="img" aria-label="Maya passes a note to Jordan while Sam watches">
+        <g class="kid" id="kid-maya"><circle cx="90" cy="70" r="16"/><path d="M62,104 q28,-26 56,0"/><rect x="45" y="104" width="90" height="8" rx="2"/><text x="90" y="134">Maya</text></g>
+        <g class="kid snoop" id="kid-sam"><circle cx="320" cy="70" r="16"/><path d="M292,104 q28,-26 56,0"/><rect x="275" y="104" width="90" height="8" rx="2"/><text x="320" y="134">Sam</text></g>
+        <g class="kid" id="kid-jordan"><circle cx="550" cy="70" r="16"/><path d="M522,104 q28,-26 56,0"/><rect x="505" y="104" width="90" height="8" rx="2"/><text x="550" y="134">Jordan</text></g>
+        <g id="bubbles"></g>
+        <g id="paper"><rect width="50" height="24" rx="2"/><text id="paper-text" x="25" y="16">HI</text></g>
+      </svg>
+      <div class="story-body">
+        <p class="where" id="story-count"></p>
+        <div id="story-text"></div>
+      </div>
+      <div class="row">
+        <button id="story-prev">← Back</button>
+        <button id="story-next" class="primary">Next →</button>
+      </div>
+    </figure>
+    <p class="note">
+      That's all of RSA. Jordan's lock, 55 and 3, is the <b>public key</b>. Jordan's 27 is the <b>private key</b>.
+      Below is the same process as a worksheet, where you pick the numbers.
+    </p>
+
     <h2>Step 1. Pick two primes</h2>
     <p class="plain">A prime is a number that only divides by 1 and itself, like 2, 3, 5, 7, 11, 13. We need two of them.</p>
     <div class="inputs">

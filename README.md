@@ -8,7 +8,9 @@ intro discrete math course.
 [![RSA by hand worksheet](docs/screenshot.png)](https://mamoonrkhan.github.io/rsa-from-scratch/)
 
 No math background needed for the page: it starts with an animated padlock story, explains "mod" with a
-clock you can watch count, and gives every step a one-line plain-English version before the math.
+clock you can watch count, and walks through a story (passing a note in class while someone snoops) with
+numbers small enough to check on a phone calculator. Every step also gets a one-line plain-English version
+before the math.
 
 ## Why I made this
 

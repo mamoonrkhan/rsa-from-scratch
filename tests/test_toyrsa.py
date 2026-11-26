@@ -96,6 +96,19 @@ class Rsa(unittest.TestCase):
         self.assertEqual(encrypt_int(65, public), 2790)
         self.assertEqual(decrypt_int(2790, private), 65)
 
+    def test_classroom_story(self):
+        # The numbers in the "passing a note in class" story on the web page.
+        public, private = make_keypair(5, 11, 3)
+        self.assertEqual((public.n, private.d), (55, 27))
+        self.assertEqual(3 * 27, 2 * 40 + 1)
+        self.assertEqual([encrypt_int(m, public) for m in (8, 9)], [17, 14])  # H = 8, I = 9
+        self.assertEqual([decrypt_int(c, private) for c in (17, 14)], [8, 9])
+        self.assertEqual([8 ** 3, 9 ** 3], [9 * 55 + 17, 13 * 55 + 14])
+        # Repeated squaring of 17, and 27 = 16 + 8 + 2 + 1.
+        self.assertEqual([pow(17, k, 55) for k in (1, 2, 4, 8, 16)], [17, 14, 31, 26, 16])
+        self.assertEqual(17 * 14 * 26 * 16 % 55, 8)
+        self.assertEqual(len(str(17 ** 27)), 34)
+
     def test_every_message_round_trips_for_a_small_key(self):
         public, private = make_keypair(61, 53, 17)
         for m in range(public.n):

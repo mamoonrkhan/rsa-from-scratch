@@ -186,3 +186,31 @@ figcaption { display: flex; align-items: flex-start; justify-content: space-betw
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---------------------------------------------------------------- classroom story */
+
+.story { margin: 14px 0; border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px 14px; background: var(--box); }
+#classroom { display: block; width: 100%; height: auto; }
+#classroom .kid circle { fill: var(--paper); stroke: var(--text); stroke-width: 2; }
+#classroom .kid path { fill: none; stroke: var(--text); stroke-width: 2; }
+#classroom .kid rect { fill: #b08a55; }
+#classroom .kid text { fill: var(--text); font-size: 14px; text-anchor: middle; }
+#classroom .snoop circle, #classroom .snoop path { stroke: var(--muted); stroke-dasharray: 3 3; }
+#classroom .bubble rect, #classroom .bubble path { fill: var(--paper); stroke: var(--text); stroke-width: 1.5; }
+#classroom .bubble.think rect, #classroom .bubble.think path { stroke-dasharray: 4 3; }
+#classroom .bubble text { fill: var(--text); font-size: 12.5px; text-anchor: middle; }
+#classroom .bubble.think text { font-style: italic; fill: var(--muted); }
+#paper { transform: translate(115px, 78px); transition: transform 1.1s ease-in-out; }
+#paper rect { fill: #fffdf2; stroke: #8a7a52; stroke-width: 1.5; }
+#paper text { font: 700 12px ui-monospace, Menlo, monospace; text-anchor: middle; fill: #3b2a0a; }
+#paper.locked rect { fill: #e9c98b; }
+#paper.locked text { fill: #8c2f1b; }
+.story-body { min-height: 170px; margin-top: 6px; }
+.story-body .where { color: var(--muted); font-size: 13px; margin: 0; }
+.story button:disabled { opacity: .4; cursor: default; }
+.story button.primary, .story-next { font-weight: 600; }
+button.primary { background: var(--text); color: var(--paper); border-color: var(--text); }
+.pop-in > g { animation: bubble-in .35s cubic-bezier(.2, 1.4, .4, 1) both; transform-box: fill-box; transform-origin: bottom center; }
+.pop-in > g:nth-child(2) { animation-delay: .25s; }
+@keyframes bubble-in { from { opacity: 0; transform: scale(.6); } }
+.story .work td:first-child { text-align: left; }

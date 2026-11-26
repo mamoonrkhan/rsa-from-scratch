@@ -340,6 +340,115 @@
     clockTimer = setTimeout(tick, delay);
   }
 
+  // ---------------------------------------------------------------- the classroom story
+
+  // Tiny numbers on purpose: p = 5, q = 11, n = 55, e = 3, d = 27. "HI" is 8 9, which locks to 17 14.
+  // Every number below is checked in tests/test_toyrsa.py (test_classroom_story).
+  const DESK = { maya: 115, sam: 295, jordan: 475 };
+  const calcTable = (rows) => `<div class="work"><table>${rows.map((r, i) =>
+    `<tr style="--i:${i}">${r.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`;
+
+  const STORY = [
+    {
+      paper: ['maya', 'HI'],
+      say: { maya: 'I want to tell Jordan: HI', sam: 'I read every note.' },
+      html: `<p>Maya wants to pass Jordan a note that says <b>HI</b>. The problem: Sam sits in the middle and reads every
+        note that goes by. Maya and Jordan can't whisper a secret password to each other first, because Sam would hear
+        that too.</p>`,
+    },
+    {
+      paper: ['maya', 'HI'],
+      say: { jordan: 'My lock is 55 and 3.', sam: 'Noted: 55 and 3.' },
+      html: `<p>Jordan secretly picks two primes, <b>5</b> and <b>11</b>, and multiplies them. Then Jordan picks a
+        "locking number", <b>3</b>, and announces the lock out loud. Sam hears it too, and that's fine.</p>
+        ${calcTable([['5 × 11', '=', '<b>55</b>'], ['lock', '=', '<b>55 and 3</b>']])}`,
+    },
+    {
+      paper: ['maya', 'HI'],
+      say: { jordan: '(my secret: 27)' },
+      think: 'jordan',
+      html: `<p>Now Jordan works out the matching <b>unlocking number</b>, using the two primes nobody else knows.
+        First (5 − 1) × (11 − 1) = 40. Then Jordan needs a number that, times 3, leaves remainder 1 when divided by 40.
+        That's <b>27</b>. Jordan tells no one.</p>
+        ${calcTable([['(5 − 1) × (11 − 1)', '=', '40'], ['3 × 27', '=', '81'], ['81', '=', '2 × 40 + <b>1</b> ✓']])}`,
+    },
+    {
+      paper: ['maya', '8 9'],
+      say: { maya: 'H is 8, I is 9.' },
+      html: `<p>Maya turns her letters into numbers, counting A = 1, B = 2, C = 3, and so on. So H = <b>8</b> and
+        I = <b>9</b>.</p>`,
+    },
+    {
+      paper: ['maya', '17 14'],
+      say: { maya: 'Locked with 55 and 3!' },
+      html: `<p>To lock a number, Maya multiplies it by itself 3 times (the locking number), divides by 55, and keeps
+        only the remainder. That's "mod 55", the clock from earlier with 55 spots.</p>
+        ${calcTable([['8 × 8 × 8', '=', '512', '=', '9 × 55 + <b>17</b>'], ['9 × 9 × 9', '=', '729', '=', '13 × 55 + <b>14</b>']])}
+        <p>The note now says <b>17 14</b>.</p>`,
+    },
+    {
+      paper: ['sam', '17 14'],
+      say: { sam: '17 14? Means nothing to me.' },
+      html: `<p>The note goes past Sam. He knows the lock (55 and 3) and sees 17 14. To unlock it he'd need 27, and to
+        work out 27 he'd need the two primes Jordan kept secret.</p>
+        <p class="note">To be fair, Sam could figure out that 55 = 5 × 11 in a few seconds. With a real key, the lock
+        number is over 600 digits long, and nobody knows how to split a number that big into its two primes in any
+        reasonable time. That's the whole trick.</p>`,
+    },
+    {
+      paper: ['jordan', '17 14'],
+      say: { jordan: 'Got it. Time to unlock.' },
+      html: `<p>Jordan unlocks with the secret 27: multiply 17 by itself 27 times, divide by 55, keep the remainder.
+        Multiplying it all out first would give a 34-digit number, so Jordan takes a shortcut. 27 = 16 + 8 + 2 + 1, so
+        square 17 over and over, keeping remainders the whole way, and multiply together the powers that add up to 27:</p>
+        ${calcTable([
+          ['17<sup>1</sup>', '→', '17'], ['17<sup>2</sup> = 289', '→', '14'], ['17<sup>4</sup>: 14 × 14 = 196', '→', '31'],
+          ['17<sup>8</sup>: 31 × 31 = 961', '→', '26'], ['17<sup>16</sup>: 26 × 26 = 676', '→', '16'],
+          ['17 × 14 × 26 × 16, with remainders', '→', '<b>8</b>']])}
+        <p>The same thing with 14 gives <b>9</b>.</p>`,
+    },
+    {
+      paper: ['jordan', 'HI'],
+      say: { jordan: '8 is H, 9 is I. HI!', sam: '...' },
+      html: `<p>8 and 9 are H and I. Jordan reads <b>HI</b>. Sam saw the lock and the locked note, and still has no idea
+        what it said.</p>`,
+    },
+  ];
+
+  function startStory() {
+    let i = 0;
+    const paper = $('paper');
+
+    const bubble = (who, text, think) => {
+      const cx = { maya: 90, sam: 320, jordan: 550 }[who];
+      const w = Math.min(210, 18 + text.length * 7.1);
+      const left = Math.max(4, Math.min(636 - w, cx - w / 2));  // keep the bubble inside the picture
+      return `<g class="bubble ${think ? 'think' : ''}">
+        <rect x="${left}" y="4" width="${w}" height="30" rx="8"/>
+        <path d="M${cx - 6},34 L${cx},46 L${cx + 6},34"/>
+        <text x="${left + w / 2}" y="24">${esc(text)}</text></g>`;
+    };
+
+    const render = () => {
+      const st = STORY[i];
+      $('story-count').textContent = `${i + 1} of ${STORY.length}`;
+      $('story-text').innerHTML = st.html;
+      replay($('story-text'), 'build');
+      $('bubbles').innerHTML = Object.entries(st.say).map(([who, t]) => bubble(who, t, st.think === who)).join('');
+      replay($('bubbles'), 'pop-in');
+      const [where, text] = st.paper;
+      paper.style.transform = `translate(${DESK[where]}px, 78px)`;
+      $('paper-text').textContent = text;
+      paper.classList.toggle('locked', text !== 'HI' && text !== '8 9');
+      $('story-prev').disabled = i === 0;
+      $('story-next').textContent = i === STORY.length - 1 ? 'Start over' : 'Next →';
+    };
+
+    $('story-next').addEventListener('click', () => { i = (i + 1) % STORY.length; render(); });
+    $('story-prev').addEventListener('click', () => { if (i > 0) { i--; render(); } });
+    render();
+  }
+
   // ---------------------------------------------------------------- wiring
 
   for (const id of ['p', 'q', 'e', 'msg']) $(id).addEventListener('input', update);
@@ -349,6 +458,7 @@
   update();
   state.ready = true;
   startScene();
+  startStory();
   drawClock(12, 0, false);
 
   // Count out the clock the first time it scrolls into view.
