@@ -375,7 +375,7 @@
     {
       paper: ['maya', '8 9'],
       say: { maya: 'H is 8, I is 9.' },
-      html: `<p>Maya turns her letters into numbers, counting A = 1, B = 2, C = 3, and so on. So H = <b>8</b> and
+      html: `<p>Maya turns the letters into numbers, counting A = 1, B = 2, C = 3, and so on. So H = <b>8</b> and
         I = <b>9</b>.</p>`,
     },
     {
@@ -389,8 +389,8 @@
     {
       paper: ['sam', '17 14'],
       say: { sam: '17 14? Means nothing to me.' },
-      html: `<p>The note goes past Sam. He knows the lock (55 and 3) and sees 17 14. To unlock it he'd need 27, and to
-        work out 27 he'd need the two primes Jordan kept secret.</p>
+      html: `<p>The note goes past Sam. Sam knows the lock (55 and 3) and sees 17 14. Unlocking it would take 27, and
+        working out 27 would take the two primes Jordan kept secret.</p>
         <p class="note">To be fair, Sam could figure out that 55 = 5 × 11 in a few seconds. With a real key, the lock
         number is over 600 digits long, and nobody knows how to split a number that big into its two primes in any
         reasonable time. That's the whole trick.</p>`,
