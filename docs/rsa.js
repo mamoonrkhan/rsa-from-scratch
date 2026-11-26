@@ -415,6 +415,8 @@
     },
   ];
 
+  const narrowQuery = window.matchMedia('(max-width: 560px)');
+
   function startStory() {
     let i = 0;
     const paper = $('paper');
@@ -434,8 +436,18 @@
       $('story-count').textContent = `${i + 1} of ${STORY.length}`;
       $('story-text').innerHTML = st.html;
       replay($('story-text'), 'build');
-      $('bubbles').innerHTML = Object.entries(st.say).map(([who, t]) => bubble(who, t, st.think === who)).join('');
-      replay($('bubbles'), 'pop-in');
+      // Speech bubbles are too small to read on a phone, so there they become a line of text instead.
+      const names = { maya: 'Maya', sam: 'Sam', jordan: 'Jordan' };
+      if (narrowQuery.matches) {
+        $('bubbles').innerHTML = '';
+        $('story-speech').innerHTML = Object.entries(st.say).map(([who, t]) =>
+          `<p class="${st.think === who ? 'think' : ''}"><b>${names[who]}${st.think === who ? ' (thinking)' : ''}:</b> ${esc(t.replace(/^\(|\)$/g, ''))}</p>`).join('');
+        replay($('story-speech'), 'build');
+      } else {
+        $('story-speech').innerHTML = '';
+        $('bubbles').innerHTML = Object.entries(st.say).map(([who, t]) => bubble(who, t, st.think === who)).join('');
+        replay($('bubbles'), 'pop-in');
+      }
       const [where, text] = st.paper;
       paper.style.transform = `translate(${DESK[where]}px, 78px)`;
       $('paper-text').textContent = text;
@@ -446,6 +458,7 @@
 
     $('story-next').addEventListener('click', () => { i = (i + 1) % STORY.length; render(); });
     $('story-prev').addEventListener('click', () => { if (i > 0) { i--; render(); } });
+    narrowQuery.addEventListener('change', render);  // rotate phone / resize window
     render();
   }
 

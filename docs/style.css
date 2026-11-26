@@ -214,3 +214,44 @@ button.primary { background: var(--text); color: var(--paper); border-color: var
 .pop-in > g:nth-child(2) { animation-delay: .25s; }
 @keyframes bubble-in { from { opacity: 0; transform: scale(.6); } }
 .story .work td:first-child { text-align: left; }
+
+/* ---------------------------------------------------------------- phones and touch screens */
+
+.work { overflow-x: auto; }
+.speech:empty { display: none; }
+.speech { margin: 8px 0 2px; }
+.speech p { margin: 2px 0; font-size: 15px; }
+.speech p.think { color: var(--muted); font-style: italic; }
+.speech [style*="--i"], .speech p { animation: rise .35s ease-out both; }
+
+@media (pointer: coarse) {
+  button { padding: 8px 14px; }
+  .small-btn { padding: 4px 10px; }
+  .story .row button { min-width: 96px; }
+}
+@media (max-width: 560px) {
+  main { padding: 20px 14px 40px; }
+  h1 { font-size: 24px; }
+  .plain { font-size: 16px; }
+  /* iPhones zoom into any input with text smaller than 16px, so keep them at 16px. */
+  input, input[type=text] { font-size: 16px; }
+  input[type=text] { width: 100%; max-width: 260px; }
+  .clock-row { justify-content: center; }
+  .story, .scene-wrap { padding: 8px 10px 12px; }
+  .story-body { min-height: 0; }
+  /* The pictures shrink to fit the screen, so their labels get bigger to compensate. */
+  #scene .person text { font-size: 30px; }
+  #scene .snoop text { font-size: 24px; }
+  #scene .wire-label { font-size: 24px; }
+  #scene #peek text { font-size: 20px; }
+  #classroom .kid text { font-size: 30px; }
+  .work td.aside { white-space: normal; min-width: 130px; font-size: 12px; }
+  #ext-euclid td.aside { display: none; }
+  #scene .person text { transform: translateY(14px); }
+  #scene .snoop text { transform: translateY(10px); }
+  #classroom .kid text { transform: translateY(6px); }
+  #paper text { font-size: 14px; }
+  figcaption { flex-direction: column; min-height: 0; }
+  .keys th { display: block; padding-top: 8px; }
+  .keys td { display: inline-block; }
+}
