@@ -6,6 +6,7 @@
   --link: #0969da;
   --red: #cf222e;
   --mark: #fff8c5;
+  --paper: #ffffff;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -16,6 +17,7 @@
     --link: #4493f8;
     --red: #f85149;
     --mark: #3b2e00;
+    --paper: #0d1117;
   }
   body { background: #0d1117; }
 }
@@ -82,3 +84,105 @@ summary { cursor: pointer; color: var(--link); }
 details > div { margin-top: 8px; }
 
 .faded { opacity: 0.35; pointer-events: none; }
+
+/* ---------------------------------------------------------------- plain-English lines */
+
+.plain { font-size: 17px; border-left: 3px solid var(--link); padding: 2px 0 2px 12px; margin: 6px 0 10px; }
+details > p, details > .work { margin-left: 2px; }
+
+/* ---------------------------------------------------------------- padlock story */
+
+.scene-wrap { margin: 14px 0; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px 12px; background: var(--box); }
+#scene { display: block; width: 100%; height: auto; }
+#scene .wire { stroke: var(--line); stroke-width: 2; stroke-dasharray: 6 6; }
+#scene .wire-label { fill: var(--muted); font-size: 12px; text-anchor: middle; }
+#scene .person circle { fill: var(--paper, #fff); stroke: var(--text); stroke-width: 2; }
+#scene .person text { fill: var(--text); font-size: 14px; text-anchor: middle; }
+#scene .snoop circle { stroke: var(--muted); stroke-dasharray: 3 3; }
+#scene .snoop text { fill: var(--muted); font-size: 12px; }
+#scene #box rect { fill: #e9c98b; stroke: #8a6a2f; stroke-width: 2; }
+#scene #box line { stroke: #8a6a2f; stroke-width: 2; }
+#scene #note { font: 700 14px ui-monospace, Menlo, monospace; text-anchor: middle; fill: #3b2a0a; }
+#scene #lock rect { fill: #c8a23a; stroke: #6b5313; stroke-width: 1.5; }
+#scene #lock circle { fill: #6b5313; }
+#scene #shackle { fill: none; stroke: #7b7f86; stroke-width: 3; }
+#scene #key circle { fill: none; stroke: #c8a23a; stroke-width: 3; }
+#scene #key path { fill: none; stroke: #c8a23a; stroke-width: 3; }
+#scene #peek rect { fill: var(--paper, #fff); stroke: var(--muted); stroke-dasharray: 4 3; }
+#scene #peek text { fill: var(--red); font: 13px ui-monospace, Menlo, monospace; text-anchor: middle; }
+figcaption { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-top: 6px; min-height: 48px; }
+#scene-caption { font-size: 16px; }
+.still-line { display: block; margin: 2px 0; }
+.small-btn { font-size: 12px; padding: 2px 8px; flex: none; }
+
+/* Resting positions (also used when motion is turned off). */
+#scene #box { transform: translate(105px, 100px); }
+#scene #lock { transform: translate(119px, 110px); }
+#scene #key { transform: translate(568px, 76px); }
+#scene #note, #scene #peek { opacity: 0; }
+
+/* 1. the open padlock travels from your friend to you */
+#scene[data-stage="0"] #lock { animation: lock0 1.6s ease-in-out .3s both; }
+#scene[data-stage="0"] #shackle { transform: translateY(-6px); }
+#scene[data-stage="0"] #note { opacity: 1; }
+@keyframes lock0 { from { transform: translate(505px, 22px); } to { transform: translate(119px, 60px); } }
+
+/* 2. the message goes in and the lock snaps shut */
+#scene[data-stage="1"] #note { animation: fade-out .5s ease-in .2s both; }
+#scene[data-stage="1"] #lock { animation: lock1 .8s ease-in .6s both; }
+#scene[data-stage="1"] #shackle { animation: snap .25s ease-in 1.4s both; }
+@keyframes lock1 { from { transform: translate(119px, 60px); } to { transform: translate(119px, 110px); } }
+@keyframes snap { from { transform: translateY(-6px); } to { transform: translateY(0); } }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+
+/* 3. the locked box crosses the internet past someone listening */
+#scene[data-stage="2"] #box { animation: box2 2.4s ease-in-out .2s both; }
+#scene[data-stage="2"] #lock { animation: lock2 2.4s ease-in-out .2s both; }
+#scene[data-stage="2"] #peek { animation: fade-in .4s ease-out 1s both; }
+@keyframes box2 { from { transform: translate(105px, 100px); } to { transform: translate(475px, 100px); } }
+@keyframes lock2 { from { transform: translate(119px, 110px); } to { transform: translate(489px, 110px); } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* 4. your friend's key opens it */
+#scene[data-stage="3"] #box { transform: translate(475px, 100px); }
+#scene[data-stage="3"] #key { animation: key3 2s ease-in-out .2s both; }
+#scene[data-stage="3"] #shackle { animation: unsnap .3s ease-out 1.1s both; }
+#scene[data-stage="3"] #lock { animation: lock3 .6s ease-in 1.5s both; }
+#scene[data-stage="3"] #note { animation: fade-in .4s ease-out 1.9s both; }
+@keyframes key3 { 0%, 100% { transform: translate(568px, 76px); } 45%, 65% { transform: translate(512px, 119px); } }
+@keyframes unsnap { from { transform: translateY(0); } to { transform: translateY(-6px); } }
+@keyframes lock3 { from { transform: translate(489px, 110px); opacity: 1; } to { transform: translate(489px, 66px); opacity: 0; } }
+
+#scene.paused * { animation-play-state: paused !important; }
+
+/* ---------------------------------------------------------------- mod clock */
+
+.clock-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px; margin: 8px 0; }
+#clock { width: 200px; height: 200px; flex: none; }
+#clock .face { fill: var(--box); stroke: var(--line); stroke-width: 2; }
+#clock .spot { fill: #fff; stroke: var(--line); stroke-width: 1.5; }
+#clock .spot.here { fill: var(--mark); stroke: #bf8700; }
+#clock .spot.land { fill: #1a7f37; stroke: #1a7f37; }
+#clock .spot-label { font: 11px ui-monospace, Menlo, monospace; text-anchor: middle; fill: var(--text); }
+#clock .spot-label.on { font-weight: 700; }
+#clock .spot.land + .spot-label { fill: #fff; }
+#clock .hand { stroke: var(--text); stroke-width: 3; stroke-linecap: round; }
+#clock .hub { fill: var(--text); }
+.clock-result { font-size: 18px; min-height: 52px; }
+@media (prefers-color-scheme: dark) {
+  #clock .spot { fill: #0d1117; }
+}
+
+.crack p { font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------------- highlights when things change */
+
+.changed { animation: glow 1.4s ease-out; border-radius: 4px; }
+@keyframes glow { from { background-color: var(--mark); } to { background-color: transparent; } }
+
+.build [style*="--i"] { animation: rise .4s ease-out both; animation-delay: calc(var(--i) * 80ms); }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

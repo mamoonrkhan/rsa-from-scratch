@@ -7,6 +7,9 @@ intro discrete math course.
 
 [![RSA by hand worksheet](docs/screenshot.png)](https://mamoonrkhan.github.io/rsa-from-scratch/)
 
+No math background needed for the page: it starts with an animated padlock story, explains "mod" with a
+clock you can watch count, and gives every step a one-line plain-English version before the math.
+
 ## Why I made this
 
 In discrete math, topics like modular arithmetic, Euclid's algorithm and Euler's theorem
