@@ -7,22 +7,24 @@
   --red: #cf222e;
   --mark: #fff8c5;
   --paper: #ffffff;
+  --page: #ffffff;
+  color-scheme: light;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #e6edf3;
-    --muted: #9198a1;
-    --line: #3d444d;
-    --box: #151b23;
-    --link: #4493f8;
-    --red: #f85149;
-    --mark: #3b2e00;
-    --paper: #0d1117;
-  }
-  body { background: #0d1117; }
+:root[data-theme="dark"] {
+  --text: #e6edf3;
+  --muted: #9198a1;
+  --line: #3d444d;
+  --box: #151b23;
+  --link: #4493f8;
+  --red: #f85149;
+  --mark: #3b2e00;
+  --paper: #0d1117;
+  --page: #0d1117;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
+body { background: var(--page); }
 [hidden] { display: none !important; }
 
 body {
@@ -160,7 +162,7 @@ figcaption { display: flex; align-items: flex-start; justify-content: space-betw
 .clock-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px; margin: 8px 0; }
 #clock { width: 200px; height: 200px; flex: none; }
 #clock .face { fill: var(--box); stroke: var(--line); stroke-width: 2; }
-#clock .spot { fill: #fff; stroke: var(--line); stroke-width: 1.5; }
+#clock .spot { fill: var(--paper); stroke: var(--line); stroke-width: 1.5; }
 #clock .spot.here { fill: var(--mark); stroke: #bf8700; }
 #clock .spot.land { fill: #1a7f37; stroke: #1a7f37; }
 #clock .spot-label { font: 11px ui-monospace, Menlo, monospace; text-anchor: middle; fill: var(--text); }
@@ -169,9 +171,6 @@ figcaption { display: flex; align-items: flex-start; justify-content: space-betw
 #clock .hand { stroke: var(--text); stroke-width: 3; stroke-linecap: round; }
 #clock .hub { fill: var(--text); }
 .clock-result { font-size: 18px; min-height: 52px; }
-@media (prefers-color-scheme: dark) {
-  #clock .spot { fill: #0d1117; }
-}
 
 .crack p { font-variant-numeric: tabular-nums; }
 
@@ -255,3 +254,8 @@ button.primary { background: var(--text); color: var(--paper); border-color: var
   .keys th { display: block; padding-top: 8px; }
   .keys td { display: inline-block; }
 }
+
+/* ---------------------------------------------------------------- light/dark toggle */
+
+.title-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.theme-toggle { flex: none; font-size: 13px; padding: 4px 10px; border-radius: 999px; }
