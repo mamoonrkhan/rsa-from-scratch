@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Page not found · RSA by hand</title>
+  <script>
+    // Same theme choice as the rest of the site.
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem('theme'); } catch (e) {}
+      var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    })();
+  </script>
+  <!-- This page can be served at any missing path, so every link here starts from the site root. -->
+  <link rel="stylesheet" href="/rsa-from-scratch/style.css">
+  <link rel="icon" href="/rsa-from-scratch/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/rsa-from-scratch/favicon-32.png" sizes="32x32" type="image/png">
+  <style>
+    main { max-width: 640px; padding-top: 72px; }
+    .code { font: 600 15px ui-monospace, Menlo, Consolas, monospace; color: var(--muted); margin: 0; }
+    .home { display: inline-block; margin-top: 8px; padding: 8px 16px; border-radius: 6px; background: var(--text); color: var(--page); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="code">404</p>
+    <h1>This page doesn't exist</h1>
+    <p>Factoring 404 is easy:</p>
+    <div class="work"><p>404 = 2 × 2 × 101</p></div>
+    <p>Finding this page, on the other hand, turned out to be impossible. Maybe the link has a typo, or the page moved.</p>
+    <p><a class="home" href="/rsa-from-scratch/">Go to RSA by hand</a></p>
+    <p class="note">Or see the code on <a href="https://github.com/mamoonrkhan/rsa-from-scratch">GitHub</a>.</p>
+  </main>
+</body>
+</html>
