@@ -16,6 +16,7 @@
     })();
   </script>
   <link rel="stylesheet" href="style.css">
+  <script defer src="rsa.js"></script>
 </head>
 <body>
   <main>
@@ -40,11 +41,11 @@
 
         <g class="person"><circle cx="60" cy="118" r="26"/><text x="60" y="164">You</text></g>
         <g class="person"><circle cx="580" cy="118" r="26"/><text x="580" y="164">Friend</text></g>
-        <g class="person snoop"><circle cx="320" cy="190" r="18"/><text x="320" y="225">someone listening</text></g>
+        <g class="person snoop"><circle cx="320" cy="190" r="18"/><text x="294" y="195">someone listening</text></g>
 
         <g id="peek">
-          <rect x="318" y="158" width="264" height="44" rx="6"/>
-          <text x="450" y="185">sees only: 3000 1486</text>
+          <rect x="350" y="188" width="256" height="44" rx="6"/>
+          <text x="478" y="215">sees only: 3000 1486</text>
         </g>
 
         <g id="box">
@@ -250,7 +251,38 @@
     </p>
   </main>
 
-  <script src="theme.js"></script>
-  <script src="rsa.js"></script>
+  <script>
+    // The light/dark toggle. The starting theme is set by a small script in the page's <head>.
+    (function () {
+      'use strict';
+      const root = document.documentElement;
+      const button = document.getElementById('theme-toggle');
+      const system = window.matchMedia('(prefers-color-scheme: dark)');
+      const saved = () => { try { return localStorage.getItem('theme'); } catch (e) { return null; } };
+
+      function label() {
+        const dark = root.getAttribute('data-theme') === 'dark';
+        button.textContent = dark ? '☀ Light' : '☾ Dark';
+        button.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+      }
+
+      button.addEventListener('click', () => {
+        const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) { /* private browsing: just don't remember */ }
+        label();
+      });
+
+      // Until the reader picks a theme, follow the system setting if it changes.
+      system.addEventListener('change', (e) => {
+        if (!saved()) {
+          root.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+          label();
+        }
+      });
+
+      label();
+    })();
+  </script>
 </body>
 </html>

@@ -101,7 +101,7 @@ details > p, details > .work { margin-left: 2px; }
 #scene .person circle { fill: var(--paper, #fff); stroke: var(--text); stroke-width: 2; }
 #scene .person text { fill: var(--text); font-size: 14px; text-anchor: middle; }
 #scene .snoop circle { stroke: var(--muted); stroke-dasharray: 3 3; }
-#scene .snoop text { fill: var(--muted); font-size: 12px; }
+#scene .snoop text { fill: var(--muted); font-size: 12px; text-anchor: end; }
 #scene #box rect { fill: #e9c98b; stroke: #8a6a2f; stroke-width: 2; }
 #scene #box line { stroke: #8a6a2f; stroke-width: 2; }
 #scene #note { font: 700 14px ui-monospace, Menlo, monospace; text-anchor: middle; fill: #3b2a0a; }
@@ -247,7 +247,6 @@ button.primary { background: var(--text); color: var(--paper); border-color: var
   .work td.aside { white-space: normal; min-width: 130px; font-size: 12px; }
   #ext-euclid td.aside { display: none; }
   #scene .person text { transform: translateY(14px); }
-  #scene .snoop text { transform: translateY(10px); }
   #classroom .kid text { transform: translateY(6px); }
   #paper text { font-size: 14px; }
   figcaption { flex-direction: column; min-height: 0; }
