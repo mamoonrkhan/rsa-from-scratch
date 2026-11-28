@@ -93,6 +93,15 @@
 
   const state = { ready: false, crackTimer: null };
 
+  // Count a one-off event in GoatCounter, once per visit. Ad blockers often stop GoatCounter
+  // from loading, so this quietly does nothing if it isn't there.
+  const counted = new Set();
+  function track(name) {
+    if (counted.has(name) || !window.goatcounter || !window.goatcounter.count) return;
+    counted.add(name);
+    window.goatcounter.count({ path: name, title: name, event: true });
+  }
+
   // ---------------------------------------------------------------- the worksheet
 
   function setError(msg) {
@@ -209,6 +218,7 @@
 
   function crack() {
     stopCrack();
+    track('event: clicked Factor n');
     const n = Number($('p').value) * Number($('q').value);
     let d = 2;
     const tried = [];
@@ -454,6 +464,7 @@
       paper.classList.toggle('locked', text !== 'HI' && text !== '8 9');
       $('story-prev').disabled = i === 0;
       $('story-next').textContent = i === STORY.length - 1 ? 'Start over' : 'Next →';
+      if (i === STORY.length - 1) track('event: finished the classroom story');
     };
 
     $('story-next').addEventListener('click', () => { i = (i + 1) % STORY.length; render(); });

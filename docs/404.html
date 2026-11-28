@@ -14,6 +14,13 @@
       document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
     })();
   </script>
+  <script>
+    // Record misses as "404: /the/missing/path" so broken links are easy to spot in the dashboard.
+    window.goatcounter = { path: function (p) { return '404: ' + p; } };
+  </script>
+  <!-- Visit counting with GoatCounter: no cookies, nothing that follows you across sites.
+       It skips local files and pages shown inside frames, so testing doesn't count. -->
+  <script data-goatcounter="https://mamoon.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
   <!-- This page can be served at any missing path, so every link here starts from the site root. -->
   <link rel="stylesheet" href="/rsa-from-scratch/style.css">
   <link rel="icon" href="/rsa-from-scratch/favicon.svg" type="image/svg+xml">
